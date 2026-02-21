@@ -1,0 +1,22 @@
+# PostgreSQL для скрапера. Запуск: docker-compose up -d
+# Остановка: docker-compose down
+services:
+  postgres:
+    image: postgres:16-alpine
+    container_name: scrapper_postgres
+    environment:
+      POSTGRES_USER: talimjob
+      POSTGRES_PASSWORD: talimjob_pass
+      POSTGRES_DB: talimjob
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U talimjob -d talimjob"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+volumes:
+  postgres_data:
