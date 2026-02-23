@@ -1,5 +1,5 @@
 """
-Просмотр таблицы vacancies в PostgreSQL.
+Просмотр таблицы table_1_linkedin_parser в PostgreSQL.
 Запуск из корня проекта: python -m scripts.view_vacancies
 Или: python scripts/view_vacancies.py (из корня проекта)
 """
@@ -24,14 +24,14 @@ def main():
     cur = conn.cursor()
 
     # Количество записей
-    cur.execute("SELECT COUNT(*) FROM vacancies")
+    cur.execute("SELECT COUNT(*) FROM table_1_linkedin_parser")
     total = cur.fetchone()[0]
     print(f"Всего записей в vacancies: {total}\n")
 
     # Последние 20 вакансий (id, title, location, created_at)
     cur.execute("""
         SELECT id, title, location, created_at
-        FROM vacancies
+        FROM table_1_linkedin_parser
         ORDER BY id DESC
         LIMIT 20
     """)

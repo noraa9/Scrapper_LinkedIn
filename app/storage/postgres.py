@@ -35,9 +35,9 @@ class PostgresStorage:
             print("[+] Подключено к PostgreSQL")
 
     def _init_table(self) -> None:
-        """Создаёт таблицу vacancies, если её ещё нет."""
+        """Создаёт таблицу table_1_linkedin_parser, если её ещё нет."""
         self.cursor.execute("""
-            CREATE TABLE IF NOT EXISTS vacancies (
+            CREATE TABLE IF NOT EXISTS table_1_linkedin_parser (
                 id SERIAL PRIMARY KEY,
                 source VARCHAR(64) NOT NULL DEFAULT 'LinkedIn',
                 title TEXT,
@@ -97,7 +97,7 @@ class PostgresStorage:
 
         # SQL для INSERT с ON CONFLICT UPDATE
         insert_sql = """
-            INSERT INTO vacancies (
+            INSERT INTO table_1_linkedin_parser (
                 source, title, company, location, url, description, 
                 salary, contact, desc200, contact_norm
             ) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s)
