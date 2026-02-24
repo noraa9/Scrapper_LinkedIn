@@ -118,8 +118,9 @@ def parse_email(text: str) -> str:
 
 
 def scrape_job_description(page) -> str:
-    page.wait_for_timeout(1500)
-    human_scroll(page, steps=3, px=700, delay_ms=400)
+    # Чуть быстрее, но даём странице прогрузиться
+    page.wait_for_timeout(900)
+    human_scroll(page, steps=3, px=700, delay_ms=300)
     click_expandable_text_button(page)
 
     main_txt = ""
@@ -150,7 +151,8 @@ def scrape_job_description(page) -> str:
 
 
 def scrape_recruiter(page) -> Tuple[str, str]:
-    human_scroll(page, steps=6, px=850, delay_ms=450)
+    # Немного уменьшаем количество и длительность скроллов
+    human_scroll(page, steps=5, px=850, delay_ms=350)
 
     recruiter_profile = ""
     recruiter_name = ""
@@ -172,7 +174,7 @@ def scrape_recruiter(page) -> Tuple[str, str]:
 def try_contact_info_via_overlay(page, recruiter_profile: str) -> Optional[dict]:
     overlay_url = recruiter_profile.rstrip("/") + "/overlay/contact-info/"
     safe_goto(page, overlay_url)
-    page.wait_for_timeout(1200)
+    page.wait_for_timeout(800)
 
     cur = (page.url or "").lower()
     if "login" in cur or "checkpoint" in cur or "authwall" in cur:
@@ -202,10 +204,10 @@ def try_contact_info_via_overlay(page, recruiter_profile: str) -> Optional[dict]
 
 def click_contact_info_and_read_modal(page, recruiter_profile: str) -> Optional[dict]:
     safe_goto(page, recruiter_profile)
-    page.wait_for_timeout(1500)
+    page.wait_for_timeout(1000)
 
     page.mouse.wheel(0, 500)
-    page.wait_for_timeout(600)
+    page.wait_for_timeout(400)
 
     selectors = [
         'a#top-card-text-details-contact-info',
@@ -280,7 +282,8 @@ def scrape_contact_info(page, recruiter_profile: str) -> dict:
 
 def extract_job_from_view(page, job_url: str, city: str) -> Optional[Job]:
     safe_goto(page, job_url)
-    page.wait_for_timeout(1200)
+    # Короткая пауза после перехода к вакансии — дальше полагаемся на scroll/життер
+    page.wait_for_timeout(800)
 
     # LinkedIn anti-bot
     if is_bad_redirect(page.url):
@@ -291,7 +294,6 @@ def extract_job_from_view(page, job_url: str, city: str) -> Optional[Job]:
     if "/jobs/view/" not in (page.url or ""):
         return None
 
-    page.wait_for_timeout(900)
     sleep_jitter()
 
     # Title

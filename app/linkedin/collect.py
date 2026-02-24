@@ -6,7 +6,8 @@ from app.config import MAX_JOBS_PER_ROLE
 
 
 def collect_job_links(page: Page) -> List[str]:
-    page.wait_for_timeout(1200)
+    # Даем результатам поискa прогрузиться, но без лишней задержки
+    page.wait_for_timeout(800)
 
     for sel in [
         "div.jobs-search-results-list",
@@ -81,6 +82,6 @@ def collect_job_links(page: Page) -> List[str]:
         except Exception:
             page.mouse.wheel(0, 1600)
 
-        page.wait_for_timeout(900)
+        page.wait_for_timeout(500)
 
     return links[:MAX_JOBS_PER_ROLE]

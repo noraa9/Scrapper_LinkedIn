@@ -65,7 +65,8 @@ def run() -> List[Job]:
 
                     if i % 5 == 0:
                         print("[+] Cooling pause...")
-                        time.sleep(random.uniform(6, 10))
+                        # Чуть сокращаем паузу, но оставляем рандом и «отдых»
+                        time.sleep(random.uniform(4, 8))
 
                     job = None
                     last_err = None

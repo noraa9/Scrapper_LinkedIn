@@ -29,8 +29,9 @@ PAGE_TIMEOUT_MS = 20_000
 NAV_TIMEOUT_MS = 20_000
 RETRY_ATTEMPTS = 3
 RETRY_DELAYS_SEC = [1, 5, 15]
-MIN_DELAY_SEC = 2
-MAX_DELAY_SEC = 5
+# Базовый джиттер между действиями (по умолчанию ~1.5–4 сек вместо 2–5)
+MIN_DELAY_SEC = 1.5
+MAX_DELAY_SEC = 4
 
 PROXY_SERVER = None
 PROXY_USERNAME = None
