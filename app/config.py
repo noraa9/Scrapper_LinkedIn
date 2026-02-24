@@ -15,12 +15,15 @@ ROLE_KEYWORDS = {
     "Project Manager": ["project manager", "руководитель проекта", "проектный менеджер", "delivery manager"],
     "UX UI Designer": ["ux", "ui", "designer", "product designer", "ux/ui", "ux designer", "ui designer"],
 }
+<<<<<<< HEAD
 GEO_IDS = {
 "Алматы": 105526356,
 "Астана": 100184048,
 "Караганда": 106399239,
 }
 
+=======
+>>>>>>> 91975673bd3d2a8a367df3cae94571db7f11373e
 
 USER_DATA_DIR = "linkedin_profile"
 HEADLESS = False
