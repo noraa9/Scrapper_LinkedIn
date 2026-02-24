@@ -4,7 +4,7 @@ from typing import List, Set, Tuple
 
 from playwright.sync_api import sync_playwright
 
-from app.config import ROLES, ROLE_KEYWORDS, RETRY_ATTEMPTS, RETRY_DELAYS_SEC
+from app.config import ROLES, ROLE_KEYWORDS, RETRY_ATTEMPTS, RETRY_DELAYS_SEC, GEO_IDS
 from app.dedupe.key import dedup_key
 from app.linkedin.browser import create_context_and_page
 from app.linkedin.collect import collect_job_links
@@ -101,6 +101,12 @@ def run() -> List[Job]:
                     seen_keys.add(key)
                     all_jobs.append(job)
                     print(f"[+] Added: {job.title} | {job.location}")
+
+                    # Сохраняем в PostgreSQL
+                    try:
+                        save_or_update(job, job.job_url)
+                    except Exception as e:
+                        print(f"[-] Ошибка при сохранении в БД: {e}")
 
         context.close()
 

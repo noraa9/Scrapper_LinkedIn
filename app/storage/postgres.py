@@ -88,12 +88,17 @@ class PostgresStorage:
         """
         self._ensure_connected()
 
-        # Вычисляем поля для дедупликации
-        desc200, contact_norm = dedup_key(job.description, job.contact)
+        # Вычисляем контакт для дедупликации (email → linkedin → job_url)
+        key_contact = job.hr_email or job.hr_linkedin or job.job_url
+        desc200, contact_norm = dedup_key(job.description, key_contact)
 
         # Извлекаем company из contact или оставляем пустым
-        # В contact может быть "url | email", company пока не извлекаем
         company = ""  # Можно расширить логику извлечения компании позже
+
+        # Человекочитаемый контакт: email | linkedin | url (то, что увидим в БД)
+        contact = " | ".join(
+            [c for c in [job.hr_email, job.hr_linkedin, job.job_url] if c]
+        )
 
         # SQL для INSERT с ON CONFLICT UPDATE
         insert_sql = """
@@ -116,7 +121,7 @@ class PostgresStorage:
                     job_url,
                     job.description,
                     job.salary,
-                    job.contact,
+                    contact,
                     desc200,
                     contact_norm,
                 ),

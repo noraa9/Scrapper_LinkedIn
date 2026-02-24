@@ -1,3 +1,45 @@
+import re
+import random
+import time
+from typing import List, Tuple, Optional
+
+from playwright.sync_api import Page
+
+from app.linkedin.utils import safe_goto, is_bad_redirect, sleep_jitter
+from app.normalize import clean_description, extract_email
+from app.models import Job
+
+
+def normalize_spaces(text: str) -> str:
+    """Нормализует пробелы и переносы строк."""
+    return re.sub(r"\s+", " ", (text or "")).strip()
+
+
+def normalize_profile_url(url: str) -> str:
+    """Приводит ссылку на профиль LinkedIn к единому виду."""
+    url = (url or "").strip()
+    if not url:
+        return ""
+
+    # Отбрасываем параметры и фрагменты
+    for sep in ("?", "#"):
+        if sep in url:
+            url = url.split(sep, 1)[0]
+
+    # Добавляем протокол/домен при необходимости
+    if url.startswith("//"):
+        url = "https:" + url
+    elif url.startswith("/"):
+        url = "https://www.linkedin.com" + url
+    elif not url.startswith("http"):
+        url = "https://" + url
+
+    # Нормализуем хвост /in/
+    if "/in/" in url and not url.endswith("/"):
+        url += "/"
+
+    return url
+
 
 def human_scroll(page, steps=6, px=800, delay_ms=450):
     for _ in range(steps):
