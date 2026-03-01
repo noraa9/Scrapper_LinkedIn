@@ -46,6 +46,7 @@ class PostgresStorage:
                 url TEXT,
                 description TEXT,
                 salary TEXT,
+                work_format TEXT,
                 contact TEXT,
                 desc200 VARCHAR(200) NOT NULL,
                 contact_norm VARCHAR(512) NOT NULL,
@@ -104,8 +105,8 @@ class PostgresStorage:
         insert_sql = """
             INSERT INTO table_1_linkedin_parser (
                 source, title, company, location, url, description, 
-                salary, contact, desc200, contact_norm
-            ) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s)
+                salary, work_format, contact, desc200, contact_norm
+            ) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)
             ON CONFLICT (source, desc200, contact_norm)
             DO UPDATE SET updated_at = NOW()
         """
@@ -121,6 +122,7 @@ class PostgresStorage:
                     job_url,
                     job.description,
                     job.salary,
+                    job.work_format,
                     contact,
                     desc200,
                     contact_norm,

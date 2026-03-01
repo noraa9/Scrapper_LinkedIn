@@ -9,6 +9,7 @@ from app.linkedin.utils import safe_goto, is_bad_redirect, sleep_jitter
 from app.normalize import clean_description, extract_email
 from app.models import Job
 
+from app.linkedin.patterns import _HYBRID_PATTERNS, _REMOTE_PATTERNS, _OFFICE_PATTERNS
 
 def normalize_spaces(text: str) -> str:
     """Нормализует пробелы и переносы строк."""
@@ -275,6 +276,23 @@ def scrape_contact_info(page, recruiter_profile: str) -> dict:
 
     return {"public_profile_url": recruiter_profile, "email": "", "raw": ""}
 
+def extract_work_format(description: str) -> str:
+    text = description.lower()
+    
+    # Идем строго по приоритетам
+    for pattern in _HYBRID_PATTERNS:
+        if pattern.search(text):
+            return "hybrid"
+
+    for pattern in _REMOTE_PATTERNS:
+        if pattern.search(text):
+            return "remote"
+
+    for pattern in _OFFICE_PATTERNS:
+        if pattern.search(text):
+            return "office"
+
+    return ""
 
 # =========================
 # MAIN EXTRACTOR (replaced)
@@ -321,6 +339,9 @@ def extract_job_from_view(page, job_url: str, city: str) -> Optional[Job]:
 
     if not title or not description or len(description) < 40:
         return None
+    
+    # Work format
+    work_format = extract_work_format(description)
 
     # Recruiter + contact info
     recruiter_name, recruiter_profile = scrape_recruiter(page)
@@ -343,6 +364,7 @@ def extract_job_from_view(page, job_url: str, city: str) -> Optional[Job]:
         description=description,
         salary="не указана",
         location=city,
+        work_format=work_format,
         hr_email=hr_email,
         hr_linkedin=hr_linkedin,
         source="LinkedIn",
